@@ -1,0 +1,15 @@
+
+// Local DNS zone configuration for home.lab
+//
+
+// Forward zone for home.lab
+zone "home.lab" {
+    type master;
+    file "/etc/bind/db.home.lab";
+};
+
+// Reverse zone for 192.168.129.0/24 (optional)
+zone "129.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.129";
+};
