@@ -58,7 +58,7 @@ The lab simulates a real-world internal network with centralized network service
 │   ├── dns/
 │   │   ├── named.conf.options
 │   │   ├── named.conf.local
-│   │   └── db.lab.local
+│   │   └── db.home.lab
 │   └── netplan/
 │       └── 00-installer-config.yaml
 ├── topology.png
