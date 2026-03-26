@@ -113,7 +113,7 @@ configs/dns/
 Includes:
 
 * Forwarders (Google DNS / Cloudflare)
-* Local domain (`lab.local`)
+* Local domain (`home.lab`)
 * Zone records
 
 ---
