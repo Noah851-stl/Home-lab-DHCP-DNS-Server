@@ -1,49 +1,81 @@
 # 🖧 Home Lab: DHCP & DNS Server with Ubuntu
 
-This project demonstrates how to build a small home lab network using Ubuntu Server as a:
+This project demonstrates the design and implementation of a small home lab network using **Ubuntu Server** as a:
 
-* DHCP Server
+* DHCP Server (dynamic IP assignment)
 * DNS Server (BIND9)
-* Router (NAT)
+* Router (NAT for internet access)
+
+The lab simulates a real-world internal network with centralized network services.
 
 ---
 
 ## 📌 Architecture
 
 <p align="center">
-  <img src="topology.png" width="800"/>
+  <img src="topology.png" alt="Network Topology" width="800"/>
 </p>
 
-### Network Design
+---
 
-| Component     | IP Address      | Role               |
-| ------------- | --------------- | ------------------ |
-| Ubuntu Server | 192.168.129.2   | DHCP, DNS, Gateway |
-| Client VM     | 192.168.129.100 | DHCP Client        |
-| External NIC  | 172.20.10.x     | Internet Access    |
+## 🌐 Network Design
+
+| Component     | Interface | IP Address    | Role               |
+| ------------- | --------- | ------------- | ------------------ |
+| Ubuntu Server | ens33     | 172.20.10.x   | Internet (Bridged) |
+| Ubuntu Server | ens37     | 192.168.129.2 | DHCP, DNS, Gateway |
+| Client VM     | ens33     | 192.168.129.x | DHCP Client        |
 
 ---
 
 ## ⚙️ Features
 
-* Automatic IP assignment via DHCP
-* Local DNS resolution using BIND9
-* Internet access via NAT
-* Multi-NIC configuration
+* Dynamic IP allocation using ISC DHCP Server
+* Internal DNS resolution using BIND9
+* Internet access via NAT (iptables)
+* Multi-interface routing configuration
+* Isolated internal network (Host-Only)
 
 ---
 
 ## 🧰 Technologies Used
 
-* Ubuntu Server
+* Ubuntu Server (Linux)
 * ISC DHCP Server
-* BIND9
+* BIND9 DNS Server
 * iptables (NAT)
-* VMware
+* VMware Workstation
 
 ---
 
-## 🚀 Setup Steps
+## 📂 Project Structure
+
+```text
+.
+├── configs/
+│   ├── dhcp/
+│   │   └── dhcpd.conf
+│   ├── dns/
+│   │   ├── named.conf.options
+│   │   ├── named.conf.local
+│   │   └── db.lab.local
+│   └── netplan/
+│       └── 00-installer-config.yaml
+├── topology.png
+├── README.md
+├── 01-dhcp-server-status.png
+├── 02-client-ip.png
+├── 03-dns-server-status.png
+├── ping-test.png
+├── dns-nslookup-test.png
+├── internet-reachable.png
+├── internal-DNS-working.png
+└── external-DNS-working.png
+```
+
+---
+
+## 🚀 Setup Overview
 
 ### 1. Install Required Packages
 
@@ -52,61 +84,108 @@ sudo apt update
 sudo apt install isc-dhcp-server bind9 -y
 ```
 
-### 2. Configure DHCP
+### 2. Configure Network Interfaces
 
-Edit:
-
-```
-/etc/dhcp/dhcpd.conf
-```
-
-### 3. Configure DNS (BIND9)
-
-Edit:
+Netplan configuration is located in:
 
 ```
-/etc/bind/named.conf.options
-/etc/bind/named.conf.local
+configs/netplan/00-installer-config.yaml
 ```
 
-### 4. Enable IP Forwarding
+---
+
+### 3. Configure DHCP Server
+
+```
+configs/dhcp/dhcpd.conf
+```
+
+Defines IP range, gateway, and DNS server.
+
+---
+
+### 4. Configure DNS Server (BIND9)
+
+```
+configs/dns/
+```
+
+Includes:
+
+* Forwarders (Google DNS / Cloudflare)
+* Local domain (`lab.local`)
+* Zone records
+
+---
+
+### 5. Enable Routing & NAT
 
 ```bash
 sudo sysctl -w net.ipv4.ip_forward=1
-```
-
-### 5. Configure NAT
-
-```bash
 sudo iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE
 ```
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & Verification
 
-* `ip a` → Check IP assignment
-* `ping 8.8.8.8` → Internet connectivity
-* `nslookup google.com` → DNS resolution
+### ✅ DHCP Server Status
+
+![DHCP](01-dhcp-server-status.png)
 
 ---
 
-## 📚 Learning Outcomes
+### ✅ Client IP Assignment
 
-* Networking fundamentals (DHCP, DNS)
-* Linux server configuration
-* NAT and routing
-* Troubleshooting network issues
+![Client IP](02-client-ip.png)
+
+---
+
+### ✅ DNS Server Status
+
+![DNS Status](03-dns-server-status.png)
+
+---
+
+### ✅ Internet Connectivity (NAT Working)
+
+![Ping](ping-test.png)
+
+---
+
+### ✅ DNS Resolution
+
+![DNS](dns-nslookup-test.png)
+
+---
+
+### ✅ External DNS Working
+
+![External DNS](External-DNS-working.png)
+
+---
+
+### ✅ Internal Domain Resolution
+
+![Internal DNS](Internal-DNS-working.png)
 
 ---
 
 ## 🧠 What I Learned
 
-- Configured DHCP server to assign dynamic IP addresses
-- Implemented DNS resolution using BIND9
-- Enabled NAT for internet access
-- Troubleshot network connectivity issues
-  
-## 🧑‍💻 Author
+* Configured a DHCP server for dynamic IP allocation
+* Implemented DNS resolution using BIND9
+* Set up NAT and routing using iptables
+* Designed a multi-network Linux server
+* Troubleshot network connectivity and DNS issues
 
-SHIN - DevOps Learner 🚀
+---
+
+## 🔥 Key Skills Demonstrated
+
+* Linux system administration
+* Networking fundamentals (DHCP, DNS, NAT)
+* Network troubleshooting
+* Infrastructure setup in virtual environments
+
+---
