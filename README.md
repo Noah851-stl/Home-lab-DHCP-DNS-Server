@@ -48,6 +48,12 @@ Flow:
 3. Internet responds to server
 4. Server translates back → Client
 
+## 🔄 NAT Flow (How NAT Works)
+
+<p align="center">
+  <img src="nat-topology.png" alt="NAT Topology Diagram" width="800"/>
+</p>
+
 ## 🧰 Technologies Used
 
 * Ubuntu Server (Linux)
